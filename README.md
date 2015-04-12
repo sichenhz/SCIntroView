@@ -1,5 +1,6 @@
-![icon](http://img03.taobaocdn.com/imgextra/i3/135480037/TB25exvcpXXXXccXpXXXXXXXXXX_!!135480037.gif)
-![icon](http://img03.taobaocdn.com/imgextra/i3/135480037/TB2czukcpXXXXabXpXXXXXXXXXX_!!135480037.gif)
+![icon](http://img01.taobaocdn.com/imgextra/i1/135480037/TB2tv1ocpXXXXXrXpXXXXXXXXXX_!!135480037.gif)
+![icon](http://img01.taobaocdn.com/imgextra/i1/135480037/TB2LIyjcpXXXXcbXpXXXXXXXXXX_!!135480037.gif)
+
 
 ####导入主头文件
     #import "SCIntroView.h"
