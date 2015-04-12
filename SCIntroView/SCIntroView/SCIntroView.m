@@ -11,7 +11,6 @@
 @interface SCIntroView () <UIScrollViewDelegate>
 
 @property (nonatomic, strong) UIImage *background_Image;
-@property (nonatomic, strong) UIColor *background_Color;
 @property (nonatomic, strong) NSArray *contentImages;
 @property (nonatomic, strong) NSArray *titles;
 @property (nonatomic, strong) NSArray *descriptionTitles;
@@ -103,10 +102,6 @@
 }
 
 - (void)setUp {
-    // Background Color
-    if (self.background_Color) {
-        self.backgroundColor = self.background_Color;
-    }
     
     // Background Image
     if (self.background_Image) {
@@ -263,13 +258,6 @@
 - (UIImage *)background_Image {
     if ([self.dataSource respondsToSelector:@selector(backgroundImageInIntroView:)]) {
         return [self.dataSource backgroundImageInIntroView:self];
-    }
-    return nil;
-}
-
-- (UIColor *)background_Color {
-    if ([self.dataSource respondsToSelector:@selector(backgroundColorInIntroView:)]) {
-        return [self.dataSource backgroundColorInIntroView:self];
     }
     return nil;
 }
