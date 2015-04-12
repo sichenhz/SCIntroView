@@ -5,3 +5,4 @@ config.plist
 *.swp
 .DS_Store
 Build
+SCIntroView.xcodeproj/project.xcworkspace/xcuserdata/MLS.xcuserdatad/UserInterfaceState.xcuserstate
