@@ -61,10 +61,6 @@
      *  返回背景图
      */
     - (UIImage *)backgroundImageInIntroView:(SCIntroView *)introView;
-    /** 
-     *  返回背景色 
-     */
-    - (UIColor *)backgroundColorInIntroView:(SCIntroView *)introView;
     /**
      *  返回每一页需显示的标题
      */
