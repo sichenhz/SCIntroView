@@ -33,7 +33,7 @@
         SCIntroViewDoneModePanGestureWithAnimation // 拖拽结束Intro（带渐变动画，默认隐藏完成按钮）
     } SCIntroViewDoneMode;
     
-4.添加至需要显示IntroView的视图上
+4.添加至需要显示IntroView的视图上
 
 5.实现一些数据源方法
 
