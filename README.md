@@ -14,9 +14,19 @@
      *  @param dataSource        IntroView的数据源（背景图，背景色，内容图，标题等）
      */
     - (instancetype)initWithFrame:(CGRect)frame dataSource:(id)dataSource;
+也可以用这个初始化方法
+
+    /**
+     *  初始化一个IntroView
+     *
+     *  @param contentImageMode  内容图片的展示形式 （默认为全屏显示）
+     *  @param doneMode          结束IntroView的方式 （默认为点击按钮结束）
+     *  @param dataSource        IntroView的数据源（背景图，背景色，内容图，标题等）
+     */
+    - (instancetype)initWithFrame:(CGRect)frame contentImageMode:(SCIntroViewContentImageMode)contentImageMode doneMode:(SCIntroViewDoneMode)doneMode dataSource:(id)dataSource;
 
 
-2.设置内容页展示形式，如不指定，默认为全屏展示
+2.设置内容页展示形式contentImageMode，如不指定，默认为全屏展示
 
     // 内容图片展示的模式
     typedef enum{
@@ -24,7 +34,7 @@
         SCIntroViewContentImageModeCenter // 居中显示图片（图片最大为屏幕宽*0.8）
     } SCIntroViewContentImageMode;
     
-3.设置Intro结束方式，如不指定，默认为点击按钮结束
+3.设置Intro结束方式doneMode，如不指定，默认为点击按钮结束
     
     // 结束Intro的模式
     typedef enum{
