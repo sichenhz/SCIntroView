@@ -1,48 +1,73 @@
-### 如何使用-SCGuideView
 ![icon](http://img03.taobaocdn.com/imgextra/i3/135480037/TB25exvcpXXXXccXpXXXXXXXXXX_!!135480037.gif)
+![icon](http://img03.taobaocdn.com/imgextra/i3/135480037/TB2czukcpXXXXabXpXXXXXXXXXX_!!135480037.gif)
 
 ####导入主头文件
-    #import "SCGuideView.h"
+    #import "SCIntroView.h"
     
-1.创建引导页视图
+####使用步骤
 
-    SCGuideView *guideView = [[SCGuideView alloc] init];
+1.初始化方法
 
-2.设置引导页数据源
+    /**
+     *  初始化一个IntroView，如不指定contentImageMode和doneMode，默认为全屏展示图片和点击按钮的方式结束Intro
+     *
+     *  @param dataSource        IntroView的数据源（背景图，背景色，内容图，标题等）
+     */
+    - (instancetype)initWithFrame:(CGRect)frame dataSource:(id)dataSource;
 
-    guideView.dataSource = self;
+
+2.设置内容页展示形式，如不指定，默认为全屏展示
+
+    // 内容图片展示的模式
+    typedef enum{
+        SCIntroViewContentImageModeDefault, // 全屏显示图片
+        SCIntroViewContentImageModeCenter // 居中显示图片（图片最大为屏幕宽*0.8）
+    } SCIntroViewContentImageMode;
     
-3.设置frame
+3.设置Intro结束方式，如不指定，默认为点击按钮结束
     
-    guideView.frame = self.view.frame;
+    // 结束Intro的模式
+    typedef enum{
+        SCIntroViewDoneModeDefault, // 点击按钮结束Intro
+        SCIntroViewDoneModePanGesture, // 拖拽结束Intro（默认隐藏完成按钮）
+        SCIntroViewDoneModePanGestureWithAnimation // 拖拽结束Intro（带渐变动画，默认隐藏完成按钮）
+    } SCIntroViewDoneMode;
     
-4.添加至跟控制器的view
+4.添加至需要显示IntroView的视图上
 
-    [self.view addSubview:guideView];
+5.实现一些数据源方法
 
 ####数据源方法
 
     @required
     /**
-     *  返回每一页需显示的主图
+     *  返回每一页需显示的内容图
      */
-    - (NSArray *)imagesInGuideView:(SCGuideView *)guideView;
+    - (NSArray *)contentImagesInIntroView:(SCIntroView *)introView;
     
     
     @optional
     /**
      *  返回背景图
      */
-    - (UIImage *)backgroundImageInGuideView:(SCGuideView *)guideView;
+    - (UIImage *)backgroundImageInIntroView:(SCIntroView *)introView;
+    /** 
+     *  返回背景色 
+     */
+    - (UIColor *)backgroundColorInIntroView:(SCIntroView *)introView;
     /**
      *  返回每一页需显示的标题
      */
-    - (NSArray *)titlesInGuideView:(SCGuideView *)guideView;
+    - (NSArray *)titlesInIntroView:(SCIntroView *)introView;
     /**
      *  返回每一页需显示的子标题
      */
-    - (NSArray *)subtitlesInGuideView:(SCGuideView *)guideView;
+    - (NSArray *)descriptionTitlesInIntroView:(SCIntroView *)introView;
     /**
      *  返回完成按钮
      */
-    - (UIButton *)doneButtonInGuideView:(SCGuideView *)guideView;    
+    - (UIButton *)doneButtonInIntroView:(SCIntroView *)introView;    
+    /** 
+     *  返回pageControl在纵坐标上的位置（SCIntroViewDoneMode为SCIntroViewDoneModeDefault时默认为0.8，其他默认为0.95） 
+    */
+    - (CGFloat)pageControlLocationInIntroView:(SCIntroView *)introView;
