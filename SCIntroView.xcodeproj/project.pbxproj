@@ -416,6 +416,7 @@
 				2563850E1ADA83C90066103F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		2563850F1ADA83C90066103F /* Build configuration list for PBXNativeTarget "SCIntroViewTests" */ = {
 			isa = XCConfigurationList;
@@ -424,6 +425,7 @@
 				256385111ADA83C90066103F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

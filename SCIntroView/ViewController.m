@@ -18,9 +18,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    // 设置根控制器
     [self setUpRootVc];
     
-    [self setUpIntroView];
+    [SCIntroView showIntrolViewFromView:self.view dataSource:self];
 }
 
 - (void)setUpRootVc {
@@ -33,14 +34,7 @@
     [self.view addSubview:label];
 }
 
-- (void)setUpIntroView {
-    SCIntroView *introView = [[SCIntroView alloc] initWithFrame:self.view.frame contentImageMode:SCIntroViewContentImageModeCenter dataSource:self];
-    [self.view addSubview:introView];
-}
-
-
 #pragma mark - <SCGuideViewDataSource>
-
 - (NSArray *)contentImagesInIntroView:(SCIntroView *)introView {
     return @[
              [UIImage imageNamed:@"Intro_1"],

@@ -8,6 +8,9 @@
 
 #import "SCIntroView.h"
 
+#define kApplicationHasShowIntroViewKey @"ApplicationHasShowIntroViewKey"
+#define kApplicationVersion @"ApplicationVersion"
+
 @interface SCIntroView () <UIScrollViewDelegate>
 
 @property (nonatomic, strong) UIImage *background_Image;
@@ -16,6 +19,7 @@
 @property (nonatomic, strong) NSArray *descriptionTitles;
 @property (nonatomic, weak) UIButton *doneButton;
 @property (nonatomic, assign) CGFloat pageControlLocation;
+@property (nonatomic, assign) CGFloat doneButtonLocation;
 @property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, weak) UIView *lastPageView;
 @property UIView *holeView;
@@ -25,40 +29,117 @@
 
 @implementation SCIntroView
 
+- (instancetype)init {
+    if ([self shouldShowIntroView]) {
+        if (self = [super init]) {
+            // 这里还没有设置frame和dataSource，无需setUp
+        }
+        return self;
+    } else {
+        return nil;
+    }
+}
+
+- (instancetype)initWithFrame:(CGRect)frame {
+    if ([self shouldShowIntroView]) {
+        if (self = [super initWithFrame:frame]) {
+            // 这里没有设置dataSource，无需setUp
+        }
+        return self;
+    } else {
+        return nil;
+    }
+}
+
 - (instancetype)initWithFrame:(CGRect)frame dataSource:(id)dataSource {
-    if (self = [super initWithFrame:frame]) {
-        _dataSource = dataSource;
-        [self setUp];
+    if ([self shouldShowIntroView]) {
+        if (self = [super initWithFrame:frame]) {
+            _dataSource = dataSource;
+            [self setUp];
+        }
+        return self;
+    } else {
+        return nil;
     }
-    return self;
 }
 
-- (instancetype)initWithFrame:(CGRect)frame doneMode:(SCIntroViewDoneMode)doneMode dataSource:(id)dataSource {
-    if (self = [super initWithFrame:frame]) {
-        _dataSource = dataSource;
-        _doneMode = doneMode;
-        [self setUp];
+- (instancetype)initWithFrame:(CGRect)frame introViewDoneMode:(SCIntroViewDoneMode)introViewDoneMode dataSource:(id)dataSource {
+    if ([self shouldShowIntroView]) {
+        if (self = [super initWithFrame:frame]) {
+            _dataSource = dataSource;
+            _introViewDoneMode = introViewDoneMode;
+            [self setUp];
+        }
+        return self;
+    } else {
+        return nil;
     }
-    return self;
 }
 
-- (instancetype)initWithFrame:(CGRect)frame contentImageMode:(SCIntroViewContentImageMode)contentImageMode doneMode:(SCIntroViewDoneMode)doneMode dataSource:(id)dataSource {
-    if (self = [super initWithFrame:frame]) {
-        _dataSource = dataSource;
-        _contentImageMode = contentImageMode;
-        _doneMode = doneMode;
-        [self setUp];
+- (instancetype)initWithFrame:(CGRect)frame introViewContentImageMode:(SCIntroViewContentImageMode)introViewContentImageMode introViewDoneMode:(SCIntroViewDoneMode)introViewDoneMode dataSource:(id)dataSource {
+    if ([self shouldShowIntroView]) {
+        if (self = [super initWithFrame:frame]) {
+            _dataSource = dataSource;
+            _introViewContentImageMode = introViewContentImageMode;
+            _introViewDoneMode = introViewDoneMode;
+            [self setUp];
+        }
+        return self;
+    } else {
+        return nil;
     }
-    return self;
 }
 
-- (instancetype)initWithFrame:(CGRect)frame contentImageMode:(SCIntroViewContentImageMode)contentImageMode dataSource:(id)dataSource {
-    if (self = [super initWithFrame:frame]) {
-        _dataSource = dataSource;
-        _contentImageMode = contentImageMode;
-        [self setUp];
+- (instancetype)initWithFrame:(CGRect)frame introViewContentImageMode:(SCIntroViewContentImageMode)introViewContentImageMode dataSource:(id)dataSource {
+    if ([self shouldShowIntroView]) {
+        if (self = [super initWithFrame:frame]) {
+            _dataSource = dataSource;
+            _introViewContentImageMode = introViewContentImageMode;
+            [self setUp];
+        }
+        return self;
+    } else {
+        return nil;
     }
-    return self;
+}
+
++ (void)showIntrolViewFromView:(UIView *)fromView dataSource:(id)dataSource {
+    CGRect frame = [UIScreen mainScreen].bounds;
+    SCIntroView *introView = [[self alloc] initWithFrame:frame dataSource:dataSource];
+    [fromView addSubview:introView];
+}
+
++ (void)showIntrolViewFromView:(UIView *)fromView dataSource:(id)dataSource
+     introViewContentImageMode:(SCIntroViewContentImageMode)introViewContentImageMode {
+    CGRect frame = [UIScreen mainScreen].bounds;
+    SCIntroView *introView = [[self alloc] initWithFrame:frame introViewContentImageMode:introViewContentImageMode dataSource:self];
+    [fromView addSubview:introView];
+}
+
++ (void)showIntrolViewFromView:(UIView *)fromView dataSource:(id)dataSource introViewDoneMode:(SCIntroViewDoneMode)introViewDoneMode {
+    CGRect frame = [UIScreen mainScreen].bounds;
+    SCIntroView *introView = [[self alloc] initWithFrame:frame introViewDoneMode:introViewDoneMode dataSource:self];
+    [fromView addSubview:introView];
+}
+
++ (void)showIntrolViewFromView:(UIView *)fromView dataSource:(id)dataSource
+     introViewContentImageMode:(SCIntroViewContentImageMode)introViewContentImageMode introViewDoneMode:(SCIntroViewDoneMode)introViewDoneMode {
+    CGRect frame = [UIScreen mainScreen].bounds;
+    SCIntroView *introView = [[self alloc] initWithFrame:frame introViewContentImageMode:introViewContentImageMode introViewDoneMode:introViewDoneMode dataSource:self];
+    [fromView addSubview:introView];
+}
+
+- (BOOL)shouldShowIntroView {
+    NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
+    // 获取当前版本
+    NSString *curVersion = [NSBundle mainBundle].infoDictionary[@"CFBundleVersion"];
+    // 获取之前存储版本
+    NSString *lastVersion = [userDefault objectForKey:kApplicationVersion];
+    if (![curVersion isEqualToString:lastVersion]) { // 有新版本, 需要显示引导页
+        [userDefault setBool:NO forKey:kApplicationHasShowIntroViewKey];
+        [userDefault setObject:[NSBundle mainBundle].infoDictionary[@"CFBundleVersion"] forKey:kApplicationVersion];
+    }
+    return ![userDefault boolForKey:kApplicationHasShowIntroViewKey];
 }
 
 - (void)setDataSource:(id<SCIntroViewDataSource>)dataSource {
@@ -81,9 +162,9 @@
     }
 }
 
-- (void)setContentImageMode:(SCIntroViewContentImageMode)contentImageMode {
-    if (_contentImageMode != contentImageMode) {
-        _contentImageMode = contentImageMode;
+- (void)setIntroViewContentImageMode:(SCIntroViewContentImageMode)introViewContentImageMode {
+    if (_introViewContentImageMode != introViewContentImageMode) {
+        _introViewContentImageMode = introViewContentImageMode;
         if (!CGRectEqualToRect(self.frame, CGRectZero) && self.dataSource) {
             [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
             [self setUp];
@@ -91,9 +172,9 @@
     }
 }
 
-- (void)setDoneMode:(SCIntroViewDoneMode)doneMode {
-    if (_doneMode != doneMode) {
-        _doneMode = doneMode;
+- (void)setIntroViewDoneMode:(SCIntroViewDoneMode)introViewDoneMode {
+    if (_introViewDoneMode != introViewDoneMode) {
+        _introViewDoneMode = introViewDoneMode;
         if (!CGRectEqualToRect(self.frame, CGRectZero) && self.dataSource) {
             [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
             [self setUp];
@@ -102,7 +183,7 @@
 }
 
 - (void)setUp {
-    
+        
     // Background Image
     if (self.background_Image) {
         UIImageView *backgroundImageView = [[UIImageView alloc] initWithFrame:self.frame];
@@ -112,7 +193,7 @@
     
     // scrollView
     self.scrollView = [[UIScrollView alloc] initWithFrame:self.frame];
-    switch (self.doneMode) {
+    switch (self.introViewDoneMode) {
         case SCIntroViewDoneModePanGesture:
         case SCIntroViewDoneModePanGestureWithAnimation:
             self.scrollView.contentSize = CGSizeMake(self.frame.size.width*(self.contentImages.count+1), self.scrollView.frame.size.height);
@@ -130,15 +211,15 @@
     [self createContentView];
 
     // pageControl
-    if (self.pageControl.hidden == NO) {
-        self.pageControl = [[UIPageControl alloc] initWithFrame:CGRectMake(0, self.frame.size.height*self.pageControlLocation, self.frame.size.width, 10)];
-        self.pageControl.currentPageIndicatorTintColor = [UIColor colorWithRed:0.153 green:0.533 blue:0.796 alpha:1.000];
-        self.pageControl.numberOfPages = self.contentImages.count;
-        [self addSubview:self.pageControl];
+    if (self.introViewPageControl.hidden == NO) {
+        self.introViewPageControl = [[UIPageControl alloc] initWithFrame:CGRectMake(0, self.frame.size.height*self.pageControlLocation, self.frame.size.width, 10)];
+        self.introViewPageControl.currentPageIndicatorTintColor = [UIColor colorWithRed:0.153 green:0.533 blue:0.796 alpha:1.000];
+        self.introViewPageControl.numberOfPages = self.contentImages.count;
+        [self addSubview:self.introViewPageControl];
     }
     
     //Done Button
-    switch (self.doneMode) {
+    switch (self.introViewDoneMode) {
         case SCIntroViewDoneModePanGesture:
         case SCIntroViewDoneModePanGestureWithAnimation:
             break;
@@ -164,7 +245,7 @@
         }
         // 内容图
         UIImageView *imageview;
-        switch (self.contentImageMode) {
+        switch (self.introViewContentImageMode) {
             case SCIntroViewContentImageModeCenter:
                 imageview = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width*.1, self.frame.size.height*.1, self.frame.size.width*.8, self.frame.size.width)];
                 break;
@@ -207,6 +288,10 @@
 }
 
 - (void)onFinishedIntroButtonPressed:(id)sender {
+    NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
+    [userDefault setBool:YES forKey:kApplicationHasShowIntroViewKey];
+    [userDefault synchronize];
+    
     [self removeIntroViewWithAnimation];
 }
 
@@ -221,9 +306,9 @@
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     CGFloat pageWidth = CGRectGetWidth(self.bounds);
     CGFloat pageFraction = self.scrollView.contentOffset.x / pageWidth;
-    self.pageControl.currentPage = roundf(pageFraction);
+    self.introViewPageControl.currentPage = roundf(pageFraction);
     
-    switch (self.doneMode) {
+    switch (self.introViewDoneMode) {
         case SCIntroViewDoneModePanGesture: {
             CGFloat pageWidth = CGRectGetWidth(self.bounds);
             if ((self.scrollView.contentOffset.x / pageWidth) >= self.contentImages.count) {
@@ -280,7 +365,7 @@
     if ([self.dataSource respondsToSelector:@selector(pageControlLocationInIntroView:)]) {
         return [self.dataSource pageControlLocationInIntroView:self];
     }
-    switch (self.doneMode) {
+    switch (self.introViewDoneMode) {
         case SCIntroViewDoneModePanGesture:
         case SCIntroViewDoneModePanGestureWithAnimation:
             return 0.95;
@@ -291,19 +376,31 @@
     }
 }
 
+- (CGFloat)doneButtonLocation {
+    if ([self.dataSource respondsToSelector:@selector(doneButtonLocationInIntroView:)]) {
+        return [self.dataSource doneButtonLocationInIntroView:self];
+    }
+    return 0.85;
+}
+
 - (UIButton *)doneButton {
     if ([self.dataSource respondsToSelector:@selector(doneButtonInIntroView:)]) {
         UIButton *doneButton = [self.dataSource doneButtonInIntroView:self];
         if (CGPointEqualToPoint(doneButton.frame.origin, CGPointZero)) {
-            doneButton.frame = CGRectMake(self.frame.size.width*.1, self.frame.size.height*.85, self.frame.size.width*.8, 60);
+            doneButton.frame = CGRectMake(self.frame.size.width*0.1, self.frame.size.height*self.doneButtonLocation, self.frame.size.width*0.8, 50);
         }
         [doneButton addTarget:self action:@selector(onFinishedIntroButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
         return doneButton;
     }
-    UIButton *doneButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width*.1, self.frame.size.height*.85, self.frame.size.width*.8, 60)];
-    doneButton.backgroundColor = [UIColor redColor];
+    return [self defaultDoneButton];
+}
+
+- (UIButton *)defaultDoneButton {
+    UIButton *doneButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width*0.1, self.frame.size.height*self.doneButtonLocation, self.frame.size.width*0.8, 50)];
+    [doneButton setTitle:@"Let's Go!" forState:UIControlStateNormal];
+    [doneButton.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Thin" size:16.0]];
+    doneButton.backgroundColor = [UIColor colorWithRed:0.941 green:0.471 blue:0.529 alpha:1.000];
     doneButton.layer.cornerRadius = 5;
-    [doneButton setTitle:@"Done Button" forState:UIControlStateNormal];
     [doneButton addTarget:self action:@selector(onFinishedIntroButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     return doneButton;
 }
