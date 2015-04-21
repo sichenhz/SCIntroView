@@ -1,6 +1,10 @@
 ![icon](http://img01.taobaocdn.com/imgextra/i1/135480037/TB2tv1ocpXXXXXrXpXXXXXXXXXX_!!135480037.gif)
 ![icon](http://img01.taobaocdn.com/imgextra/i1/135480037/TB2LIyjcpXXXXcbXpXXXXXXXXXX_!!135480037.gif)
 
+####Introduction
+1.自动存储版本号，自动识别是否有新版本
+2.自动识别用户是否点击完成按钮，如没有点击过，始终会展示introView
+3.更多自定义方法请参考demo
 
 ####导入主头文件
     #import "SCIntroView.h"
@@ -46,4 +50,3 @@
      */
     - (CGFloat)doneButtonLocationInIntroView:(SCIntroView *)introView;
     
-####更多自定义方法请参考demo
