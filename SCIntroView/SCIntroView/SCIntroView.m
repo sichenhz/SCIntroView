@@ -112,20 +112,20 @@
 + (void)showIntrolViewFromView:(UIView *)fromView dataSource:(id)dataSource
      introViewContentImageMode:(SCIntroViewContentImageMode)introViewContentImageMode {
     CGRect frame = [UIScreen mainScreen].bounds;
-    SCIntroView *introView = [[self alloc] initWithFrame:frame introViewContentImageMode:introViewContentImageMode dataSource:self];
+    SCIntroView *introView = [[self alloc] initWithFrame:frame introViewContentImageMode:introViewContentImageMode dataSource:dataSource];
     [fromView addSubview:introView];
 }
 
 + (void)showIntrolViewFromView:(UIView *)fromView dataSource:(id)dataSource introViewDoneMode:(SCIntroViewDoneMode)introViewDoneMode {
     CGRect frame = [UIScreen mainScreen].bounds;
-    SCIntroView *introView = [[self alloc] initWithFrame:frame introViewDoneMode:introViewDoneMode dataSource:self];
+    SCIntroView *introView = [[self alloc] initWithFrame:frame introViewDoneMode:introViewDoneMode dataSource:dataSource];
     [fromView addSubview:introView];
 }
 
 + (void)showIntrolViewFromView:(UIView *)fromView dataSource:(id)dataSource
      introViewContentImageMode:(SCIntroViewContentImageMode)introViewContentImageMode introViewDoneMode:(SCIntroViewDoneMode)introViewDoneMode {
     CGRect frame = [UIScreen mainScreen].bounds;
-    SCIntroView *introView = [[self alloc] initWithFrame:frame introViewContentImageMode:introViewContentImageMode introViewDoneMode:introViewDoneMode dataSource:self];
+    SCIntroView *introView = [[self alloc] initWithFrame:frame introViewContentImageMode:introViewContentImageMode introViewDoneMode:introViewDoneMode dataSource:dataSource];
     [fromView addSubview:introView];
 }
 
